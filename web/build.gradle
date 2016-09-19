@@ -1,0 +1,56 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.0.RELEASE'
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+plugins {
+	id "com.moowork.gulp" version "0.12"
+	id "com.moowork.node" version "0.12"
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+jar {
+	baseName = 'turingexchange'
+	version = '0.0.1-SNAPSHOT'
+}
+
+// needed outside of buildscript for plugins block
+repositories {
+	mavenCentral()
+}
+
+//// run npm install
+gulp_default.dependsOn 'npmInstall'
+//
+//// run gulp install
+gulp_default.dependsOn 'installGulp'
+
+compileJava.dependsOn gulp_default
+
+node {
+	nodeModulesDir = file("webapp")
+}
+
+gulp {
+	workDir = file("webapp")
+}
+
+dependencies {
+//	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
